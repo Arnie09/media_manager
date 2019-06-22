@@ -3,7 +3,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
+
+    def openFolder(self):
+        self.name = QtWidgets.QFileDialog.getExistingDirectory(self.MainWindow, "Select Directory")
+        print(self.name)
+
+
     def setupUi(self, MainWindow):
+        self.MainWindow = MainWindow
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(889, 835)
         MainWindow.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.532, y1:0, x2:0.538, y2:1, stop:0 rgba(253, 249, 206, 255), stop:1 rgba(255, 255, 255, 255))")
@@ -22,19 +29,28 @@ class Ui_MainWindow(object):
         self.search_input = QtWidgets.QLineEdit(self.centralwidget)
         self.search_input.setGeometry(QtCore.QRect(10, 30, 371, 22))
         self.search_input.setObjectName("search_input")
+
+        '''combo box to put some features by which we will search the movies'''
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(10, 60, 221, 22))
         self.comboBox.setObjectName("comboBox")
+
+        '''search button to search things'''
         self.search_button = QtWidgets.QPushButton(self.centralwidget)
         self.search_button.setGeometry(QtCore.QRect(240, 60, 141, 28))
         self.search_button.setObjectName("search_button")
+
+        '''refresh button to refresh looking for changes in files'''
         self.refresh_button = QtWidgets.QPushButton(self.centralwidget)
         self.refresh_button.setGeometry(QtCore.QRect(290, 110, 93, 28))
         self.refresh_button.setObjectName("refresh_button")
+
+        '''to display pictures of the film'''
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
         self.graphicsView.setGeometry(QtCore.QRect(520, 30, 256, 192))
         self.graphicsView.setStyleSheet("background:rgb(255, 255, 255)")
         self.graphicsView.setObjectName("graphicsView")
+
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(430, 260, 55, 16))
         self.label_3.setObjectName("label_3")
@@ -50,29 +66,36 @@ class Ui_MainWindow(object):
         self.label_7 = QtWidgets.QLabel(self.centralwidget)
         self.label_7.setGeometry(QtCore.QRect(430, 450, 55, 16))
         self.label_7.setObjectName("label_7")
+
         self.name_ = QtWidgets.QLabel(self.centralwidget)
         self.name_.setGeometry(QtCore.QRect(490, 260, 331, 16))
         self.name_.setText("")
         self.name_.setObjectName("name_")
+
         self.release_date_ = QtWidgets.QLabel(self.centralwidget)
         self.release_date_.setGeometry(QtCore.QRect(520, 290, 331, 16))
         self.release_date_.setText("")
         self.release_date_.setObjectName("release_date_")
+
         self.language_ = QtWidgets.QLabel(self.centralwidget)
         self.language_.setGeometry(QtCore.QRect(500, 320, 351, 16))
         self.language_.setText("")
         self.language_.setObjectName("language_")
+
         self.Director_ = QtWidgets.QLabel(self.centralwidget)
         self.Director_.setGeometry(QtCore.QRect(500, 350, 351, 16))
         self.Director_.setText("")
         self.Director_.setObjectName("Director_")
+
         self.Synopsis_ = QtWidgets.QLabel(self.centralwidget)
         self.Synopsis_.setGeometry(QtCore.QRect(490, 380, 371, 171))
         self.Synopsis_.setText("")
         self.Synopsis_.setObjectName("Synopsis_")
+
         self.play_button = QtWidgets.QPushButton(self.centralwidget)
         self.play_button.setGeometry(QtCore.QRect(600, 710, 93, 28))
         self.play_button.setObjectName("play_button")
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 889, 26))
@@ -85,10 +108,14 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
+        self.actionOpen.triggered.connect(self.openFolder)
+
         self.actionAbout_Media_Manager = QtWidgets.QAction(MainWindow)
         self.actionAbout_Media_Manager.setObjectName("actionAbout_Media_Manager")
+
         self.menuFile.addAction(self.actionOpen)
         self.menuAbout.addAction(self.actionAbout_Media_Manager)
         self.menubar.addAction(self.menuFile.menuAction())
