@@ -2,15 +2,20 @@ import win32api
 import sqlite3
 import os
 import json
-from bs4 import BeautifulSoup
-import urllib2
+from ScrappingAPI import WebScrapper
+import time
 
 
 cwd = os.getcwd()
 data = {}
 
 with open(os.path.join(cwd,'temp_data.json'),'r+') as fp:
-    data = json.load(fp)
+    try:
+        data = json.load(fp)
+    except:
+        data = {'names':[]}
+
+print(data)
 
 # c.execute("""CREATE TABLE local_movies(
 #         serial integer,
@@ -50,22 +55,31 @@ films_in_db["names"] = filenames
 
 films_not_in_database = []
 
-for movies in films_in_db:
-    if movies not in data:
+for movies in films_in_db['names']:
+    if movies not in data['names']:
         films_not_in_database.append(movies)
 
 conn = sqlite3.connect('movies.db')
 
 c = conn.cursor()
 
-url = 'https://www.google.com/search?q='
-url2 = '+imdb&ie=UTF-8&oe=UTF-8'
 
 '''extraction of details needs to be done here'''
-# for films in films_not_in_database:
-#     content = urllib2.urlopen(url+films+url2).read()
-#     soup = BeautifulSoup(content)
+count = 0
+for films in films_not_in_database:
+    WebScrapper_instance = WebScrapper(films)
+    print(WebScrapper_instance.information)
+    if(len(WebScrapper_instance.information) == 1):
+        count+=1
+    time.sleep(2)
+    del WebScrapper_instance
 
+print("Number of errors:",count)
+
+with open(os.path.join(cwd,'temp_data.json'),'r+') as json_file:
+    for films in films_not_in_database:
+        data['names'].append(films)
+    json.dump(data,json_file)
 
 conn.commit()
 conn.close()
