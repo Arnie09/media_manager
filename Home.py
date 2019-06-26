@@ -80,10 +80,10 @@ class Ui_MainWindow(object):
         self.release_date_.setText("")
         self.release_date_.setObjectName("release_date_")
 
-        self.language_ = QtWidgets.QLabel(self.centralwidget)
-        self.language_.setGeometry(QtCore.QRect(500, 320, 351, 16))
-        self.language_.setText("")
-        self.language_.setObjectName("language_")
+        self.genre_ = QtWidgets.QLabel(self.centralwidget)
+        self.genre_.setGeometry(QtCore.QRect(500, 320, 351, 16))
+        self.genre_.setText("")
+        self.genre_.setObjectName("genre_")
 
         self.Director_ = QtWidgets.QLabel(self.centralwidget)
         self.Director_.setGeometry(QtCore.QRect(500, 350, 351, 16))
@@ -101,8 +101,12 @@ class Ui_MainWindow(object):
         self.Synopsis_.setObjectName("Synopsis_")
 
         self.play_button = QtWidgets.QPushButton(self.centralwidget)
-        self.play_button.setGeometry(QtCore.QRect(600, 710, 93, 28))
+        self.play_button.setGeometry(QtCore.QRect(700, 710, 93, 28))
         self.play_button.setObjectName("play_button")
+
+        self.delete_button = QtWidgets.QPushButton(self.centralwidget)
+        self.delete_button.setGeometry(QtCore.QRect(475, 710, 93, 28))
+        self.delete_button.setObjectName("delete_button")
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -141,11 +145,12 @@ class Ui_MainWindow(object):
         self.refresh_button.setText(_translate("MainWindow", "Refresh"))
         self.label_3.setText(_translate("MainWindow", "Name :"))
         self.label_4.setText(_translate("MainWindow", "Release Date:"))
-        self.label_5.setText(_translate("MainWindow", "Language:"))
+        self.label_5.setText(_translate("MainWindow", "Genre:"))
         self.label_6.setText(_translate("MainWindow", "Director/s:"))
         self.label_7.setText(_translate("MainWindow", "Rating:"))
         self.label_8.setText(_translate("MainWindow", "Synopsis:"))
         self.play_button.setText(_translate("MainWindow", "Play"))
+        self.delete_button.setText(_translate("MainWindow", "Delete"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuAbout.setTitle(_translate("MainWindow", "About"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
