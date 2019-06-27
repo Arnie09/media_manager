@@ -13,6 +13,12 @@ for result in c.fetchall():
     print(result)
     count+=1
 
+c.execute("SELECT * from local_movies")
 
-print(count)
+count1 = 0
+for result in c.fetchall():
+    print(result)
+    count1+=1
+
+print(count1)
 con.close()

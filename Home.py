@@ -15,13 +15,16 @@ class Ui_MainWindow(object):
         scan_thread.start()
 
     def refresh_function(self):
+
+        self.entry = QtGui.QStandardItemModel()
+        self.movie_list_view.setModel(self.entry)
         cwd = os.getcwd()
         conn = sqlite3.connect(os.path.join(cwd,'movies_.db'))
         c = conn.cursor()
-        c.execute("SELECT * FROM movies_table")
+        c.execute("SELECT * FROM local_movies")
 
         for movie in c.fetchall():
-            item = QtGui.QStandardItem(movie)
+            item = QtGui.QStandardItem(movie[0])
             self.entry.appendRow(item)
         self.itemOld = QtGui.QStandardItem("text")
 

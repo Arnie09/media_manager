@@ -8,24 +8,24 @@ import threading
 
 class DatabaseHandler:
 
-    data = {}
-    films_not_in_database = []
-    cwd = os.getcwd()
-
     def __init__(self):
+        self.data = {}
+        self.rejected = {}
+        self.films_not_in_database = []
+        self.cwd = os.getcwd()
         self.scan_memory()
 
-    def function_that_scraps():
+    def function_that_scraps(self):
 
         '''extraction of details needs to be done here'''
         count = 0
-        conn_ = sqlite3.connect(os.path.join(cwd,'movies_.db'))
+        conn_ = sqlite3.connect(os.path.join(self.cwd,'movies_.db'))
         c_obj = conn_.cursor()
 
         '''loop through the movies for which we need info'''
-        for films in films_not_in_database:
+        for films in self.films_not_in_database:
 
-            if(count >60):
+            if(count >15):
                 break
             
             WebScrapper_instance = WebScrapper(films)
@@ -46,16 +46,25 @@ class DatabaseHandler:
 
             if(b != "Null" and c != "Null" and d != "Null"):
                 c_obj.execute("INSERT OR REPLACE INTO local_movies (file_name,name,rating,release_date,director,genre,synopsis,poster,information) VALUES(?,?,?,?,?,?,?,?,?)",(a,b,c,d,e,f,g,h,i))
-                data['names'].append(films)
+                self.data['names'].append(films)
                 conn_.commit()
+            else:
+                if(len(self.rejected) == 0):
+                    self.rejected['names'] = films
+                else:
+                    self.rejected['names'].append(films)
+
             
             time.sleep(8)
             del WebScrapper_instance
 
+        print("Files Entered!")
         with open(os.path.join(cwd,'temp_data.json'),'r+') as json_file:            
-            json.dump(data,json_file)
+            json.dump(self.data,json_file)
 
-        
+        with open(os.path.join(self.cwd,'rejectedFiles.json'),'r+') as rejected:
+            json.dump(self.rejected,rejected)
+
         '''tO DELETE THE DUPLICATE ENTRIES'''
         c_obj.execute("DELETE FROM local_movies WHERE name == 'Null'")
 
@@ -66,29 +75,37 @@ class DatabaseHandler:
     def scan_memory(self):
 
         '''connecting to database and creating object'''
-        conn = sqlite3.connect(os.path.join(cwd,'movies_.db'))
+        conn = sqlite3.connect(os.path.join(self.cwd,'movies_.db'))
         c = conn.cursor()
 
         '''The main function of temp_data is to serve as a temporary storage to keep track of the files that are in the database'''
-        with open(os.path.join(cwd,'temp_data.json'),'r+') as fp:
+        with open(os.path.join(self.cwd,'temp_data.json'),'r+') as fp:
             try:
-                data = json.load(fp)
+                self.data = json.load(fp)
             except:
-                data = {'names':[]}
-                sql = """CREATE TABLE local_movies(
-                file_name text,
-                name text,
-                rating text,
-                release_date text,
-                director text,
-                genre text,
-                synopsis text,
-                poster text,
-                information text
-                )"""
-                c.execute(sql)
+                self.data = {'names':[]}
+                try:
+                    sql = """CREATE TABLE local_movies(
+                    file_name text,
+                    name text,
+                    rating text,
+                    release_date text,
+                    director text,
+                    genre text,
+                    synopsis text,
+                    poster text,
+                    information text
+                    )"""
+                    c.execute(sql)
+                    conn.commit()
+                except:
+                    print()
 
-                conn.commit()
+        with open(os.path.join(self.cwd,'rejectedFiles.json'),'r+') as rejected:
+            try:
+                self.rejected = json.load(rejected)
+            except:
+                self.rejected = {'names':[]}
 
         '''to get a list of scannable drives except the system drive'''
         drives = []
@@ -115,17 +132,14 @@ class DatabaseHandler:
                     except(FileNotFoundError):
                         continue
 
-        films_in_db = {}
-        films_in_db["names"] = filenames
-
         '''creating the json to store paths'''
-        with open(os.path.join(cwd,'path.json'),'r+') as pathfile:
+        with open(os.path.join(self.cwd,'path.json'),'r+') as pathfile:
             json.dump(paths,pathfile)
 
         '''TO FIND OUT WHICH MOVIES HAVE A RECORD IN DATABASE ANND WHICH MOVIES ARE STILL NOT THERE IN DATABASE'''
-        for movies in films_in_db['names']:
-            if movies not in data['names']:
-                films_not_in_database.append(movies)
+        for movies in filenames:
+            if movies not in self.data['names'] and movies not in self.rejected['names']:
+                self.films_not_in_database.append(movies)
 
         # c.execute("SELECT * FROM local_movies WHERE information = 'INCOMPLETE' AND name = 'Null'")
         # for result in c.fetchall():
@@ -134,5 +148,5 @@ class DatabaseHandler:
         conn.close()
 
         '''Calling the threaded function'''
-        download_thread = threading.Thread(target=function_that_scraps)
+        download_thread = threading.Thread(target=self.function_that_scraps)
         download_thread.start()   
