@@ -4,8 +4,16 @@ import os
 import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QBrush, QColor
+from About import Ui_Dialog
 
 class Ui_MainWindow(object):
+
+    def aboutSoftware(self):
+        dialog = QtWidgets.QDialog()
+        dialogui = Ui_Dialog()
+        dialogui.setupUi(dialog)
+        dialog.show()
+        dialog.exec_()
 
     def function_to_scan(self):
         self.DatabaseHandler_instance = DatabaseHandler()
@@ -167,6 +175,7 @@ class Ui_MainWindow(object):
 
         self.actionAbout_Media_Manager = QtWidgets.QAction(MainWindow)
         self.actionAbout_Media_Manager.setObjectName("actionAbout_Media_Manager")
+        self.actionAbout_Media_Manager.triggered.connect(self.aboutSoftware)
 
         self.menuFile.addAction(self.actionOpen)
         self.menuAbout.addAction(self.actionAbout_Media_Manager)

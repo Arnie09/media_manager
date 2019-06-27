@@ -14,11 +14,17 @@ class DatabaseHandler:
         self.rejected = {}
         self.films_not_in_database = []
         self.cwd = os.getcwd()
+        self.no_more_items = False
         self.scan_memory()
 
     def function_that_scraps(self):
 
         '''extraction of details needs to be done here'''
+
+        if(len(films_not_in_database) == 0):
+            self.no_more_items = True
+            return
+
         count = 0
         conn_ = sqlite3.connect(os.path.join(self.cwd,'movies_.db'))
         c_obj = conn_.cursor()
