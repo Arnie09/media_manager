@@ -8,7 +8,7 @@ from PyQt5.QtGui import QBrush, QColor
 class Ui_MainWindow(object):
 
     def function_to_scan(self):
-        DatabaseHandler_instance = DatabaseHandler()
+        self.DatabaseHandler_instance = DatabaseHandler()
 
     def scanSystem(self):
         scan_thread = threading.Thread(target = self.function_to_scan)
@@ -18,12 +18,18 @@ class Ui_MainWindow(object):
 
         self.entry = QtGui.QStandardItemModel()
         self.movie_list_view.setModel(self.entry)
-        cwd = os.getcwd()
-        conn = sqlite3.connect(os.path.join(cwd,'movies_.db'))
-        c = conn.cursor()
-        c.execute("SELECT * FROM local_movies")
+        movies_in_db = []
+        if(self.DatabaseHandler_instance is None):
+            conn = sqlite3.connect(os.path.join(os.getcwd(),'movies_.db'))
+            c = conn.cursor()
+            c.execute("SELECT name FROM local_movies")
+            for results in c.fetchall():
+                movies_in_db.append(results)
+        else:
+            movies_in_db = self.DatabaseHandler_instance.currentStatus_db
 
-        for movie in c.fetchall():
+        #print(movies_in_db)
+        for movie in movies_in_db:
             item = QtGui.QStandardItem(movie[0])
             self.entry.appendRow(item)
         self.itemOld = QtGui.QStandardItem("text")
@@ -39,6 +45,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
+        self.DatabaseHandler_instance = None
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(889, 835)
         MainWindow.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.532, y1:0, x2:0.538, y2:1, stop:0 rgba(253, 249, 206, 255), stop:1 rgba(255, 255, 255, 255))")

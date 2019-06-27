@@ -10,6 +10,7 @@ class DatabaseHandler:
 
     def __init__(self):
         self.data = {}
+        self.currentStatus_db = []
         self.rejected = {}
         self.films_not_in_database = []
         self.cwd = os.getcwd()
@@ -25,7 +26,7 @@ class DatabaseHandler:
         '''loop through the movies for which we need info'''
         for films in self.films_not_in_database:
 
-            if(count >15):
+            if(count >5):
                 break
             
             WebScrapper_instance = WebScrapper(films)
@@ -48,6 +49,14 @@ class DatabaseHandler:
                 c_obj.execute("INSERT OR REPLACE INTO local_movies (file_name,name,rating,release_date,director,genre,synopsis,poster,information) VALUES(?,?,?,?,?,?,?,?,?)",(a,b,c,d,e,f,g,h,i))
                 self.data['names'].append(films)
                 conn_.commit()
+
+                if(len(self.currentStatus_db) == 0):
+                    c_obj.execute("SELECT name FROM local_movies")
+                    for results in c_obj.fetchall():
+                        self.currentStatus_db.append(results)
+                else:
+                    self.currentStatus_db.append((b,))
+                
             else:
                 if(len(self.rejected) == 0):
                     self.rejected['names'] = films
@@ -59,7 +68,7 @@ class DatabaseHandler:
             del WebScrapper_instance
 
         print("Files Entered!")
-        with open(os.path.join(cwd,'temp_data.json'),'r+') as json_file:            
+        with open(os.path.join(self.cwd,'temp_data.json'),'r+') as json_file:            
             json.dump(self.data,json_file)
 
         with open(os.path.join(self.cwd,'rejectedFiles.json'),'r+') as rejected:
