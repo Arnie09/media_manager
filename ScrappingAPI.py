@@ -47,8 +47,15 @@ class WebScrapper:
             soup = BeautifulSoup(req)
 
         except Exception as e:
-            self.information["Error"] = "Couldot find any information regarding the file: ",self.movie
-            print(e.headers)
+            self.information["Name"] = "Null"
+            self.information["Year"] = "Null"
+            self.information["Rating"] = "Null"
+            self.information["Genre"] = "Null"
+            self.information["Directors"] = "Null"
+            self.information["Summary"] = "Null"
+            self.information["Poster"] = "Null"
+
+            print(e)
             return
 
         try:
@@ -59,12 +66,12 @@ class WebScrapper:
         try:
             self.information["Year"] = re.findall('(\d\d\d\d)',soup.find('h1').text.strip())[0]
         except:
-            self.information["Name"] = "Null"
+            self.information["Year"] = "Null"
 
         try:
             self.information["Rating"] = soup.findAll('span',{'itemprop':'ratingValue'})[0].text.strip()
         except:
-            self.information["Name"] = "Null"
+            self.information["Rating"] = "Null"
 
         try:
             buffer_list_to_store_genres = []
@@ -73,7 +80,7 @@ class WebScrapper:
                 buffer_list_to_store_genres.append(strings)
             self.information["Genre"] = [buffer_list_to_store_genres[i] for i in range(0,len(buffer_list_to_store_genres)-1)]
         except:
-            self.information["Name"] = "Null"
+            self.information["Genre"] = "Null"
 
         try: 
             buffer_list_of_directors = []
@@ -81,20 +88,22 @@ class WebScrapper:
                 buffer_list_of_directors.append(stuff.text.strip())
             self.information["Directors"] = buffer_list_of_directors
         except:
-            self.information["Name"] = "Null"
+            self.information["Directors"] = "Null"
 
         try: 
             self.information["Summary"] = soup.findAll('div',{'class':'summary_text'})[0].text.strip()
         except:
-            self.information["Name"] = "Null"
+            self.information["Summary"] = "Null"
 
         try:
             self.information["Poster"] = soup.findAll('div',{'class':'poster'})[0].findAll('img')[0].get('src')
         except:
-            self.information["Name"] = "Null"
+            self.information["Poster"] = "Null"
 
     
 
 
 obj = WebScrapper("Jackie Brown - Tarantino 1997 - x264 - AC3 Ita - AAC Eng - Subs - Dvdrip RODJA.mkv")
 print(obj.information)
+
+'''Name,Year,Rating,Genre,Directors,Summary,Poster'''
