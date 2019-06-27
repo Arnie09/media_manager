@@ -1,13 +1,36 @@
-
-
+from databasehandler import DatabaseHandler
+import threading
+import os
+import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QBrush, QColor
 
 class Ui_MainWindow(object):
 
-    def openFolder(self):
-        self.name = QtWidgets.QFileDialog.getExistingDirectory(self.MainWindow, "Select Directory")
-        print(self.name)
+    def function_to_scan(self):
+        DatabaseHandler_instance = DatabaseHandler()
 
+    def scanSystem(self):
+        scan_thread = threading.Thread(target = self.function_to_scan)
+        scan_thread.start()
+
+    def refresh_function(self):
+        cwd = os.getcwd()
+        conn = sqlite3.connect(os.path.join(cwd,'movies_.db'))
+        c = conn.cursor()
+        c.execute("SELECT * FROM movies_table")
+
+        for movie in c.fetchall():
+            item = QtGui.QStandardItem(movie)
+            self.entry.appendRow(item)
+        self.itemOld = QtGui.QStandardItem("text")
+
+
+    def on_clicked(self, index):
+        item = self.entry.itemFromIndex(index)
+        item.setForeground(QBrush(QColor(255, 0, 0))) 
+        self.itemOld.setForeground(QBrush(QColor(0, 0, 0))) 
+        self.itemOld = item
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
@@ -20,6 +43,10 @@ class Ui_MainWindow(object):
         self.movie_list_view.setGeometry(QtCore.QRect(10, 150, 371, 621))
         self.movie_list_view.setStyleSheet("background:rgb(255, 255, 255)")
         self.movie_list_view.setObjectName("movie_list_view")
+        self.entry = QtGui.QStandardItemModel()
+        self.movie_list_view.setModel(self.entry)
+        self.movie_list_view.clicked[QtCore.QModelIndex].connect(self.on_clicked)
+
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(10, 120, 251, 16))
         self.label.setObjectName("label")
@@ -44,6 +71,7 @@ class Ui_MainWindow(object):
         self.refresh_button = QtWidgets.QPushButton(self.centralwidget)
         self.refresh_button.setGeometry(QtCore.QRect(290, 110, 93, 28))
         self.refresh_button.setObjectName("refresh_button")
+        self.refresh_button.clicked.connect(self.refresh_function)
 
         '''to display pictures of the film'''
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
@@ -123,7 +151,7 @@ class Ui_MainWindow(object):
 
         self.actionOpen = QtWidgets.QAction(MainWindow)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionOpen.triggered.connect(self.openFolder)
+        self.actionOpen.triggered.connect(self.scanSystem)
 
         self.actionAbout_Media_Manager = QtWidgets.QAction(MainWindow)
         self.actionAbout_Media_Manager.setObjectName("actionAbout_Media_Manager")
@@ -153,7 +181,7 @@ class Ui_MainWindow(object):
         self.delete_button.setText(_translate("MainWindow", "Delete"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuAbout.setTitle(_translate("MainWindow", "About"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
+        self.actionOpen.setText(_translate("MainWindow", "Scan"))
         self.actionAbout_Media_Manager.setText(_translate("MainWindow", "About Media Manager"))
 
 
