@@ -103,7 +103,7 @@ class WebScrapper:
     
 
 
-obj = WebScrapper("Jackie Brown - Tarantino 1997 - x264 - AC3 Ita - AAC Eng - Subs - Dvdrip RODJA.mkv")
-print(obj.information)
+# obj = WebScrapper("Jackie Brown - Tarantino 1997 - x264 - AC3 Ita - AAC Eng - Subs - Dvdrip RODJA.mkv")
+# print(obj.information)
 
 '''Name,Year,Rating,Genre,Directors,Summary,Poster'''

@@ -28,9 +28,11 @@ class Ui_MainWindow(object):
 
     def on_clicked(self, index):
         item = self.entry.itemFromIndex(index)
+        print(item)
         item.setForeground(QBrush(QColor(255, 0, 0))) 
         self.itemOld.setForeground(QBrush(QColor(0, 0, 0))) 
         self.itemOld = item
+        '''Do the updation of the right pane here'''
 
     def setupUi(self, MainWindow):
         self.MainWindow = MainWindow
