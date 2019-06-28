@@ -1,14 +1,18 @@
-from databasehandler import DatabaseHandler
-import threading
 import os
 import sys
 import json
 import sqlite3
+import threading
 import subprocess
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QBrush, QColor
-from About import Ui_Dialog
+import urllib.request
 from Scan import Ui_Dialog_
+from About import Ui_Dialog
+from PyQt5.QtGui import QBrush, QColor
+from PyQt5 import QtCore, QtGui, QtWidgets
+from databasehandler import DatabaseHandler
+
+
+
 
 class Ui_MainWindow(object):
 
@@ -111,6 +115,16 @@ class Ui_MainWindow(object):
         self.release_date_.setText(str(year))
         self.Synopsis_.append(str(summary)+'\n')
         self.genre_.setText(str(genre))
+
+        urllib.request.urlretrieve(poster, "poster.jpg")
+        
+        scene = QtWidgets.QGraphicsScene() 
+        pic = QtGui.QPixmap("poster.jpg")
+        scene.addItem(QtWidgets.QGraphicsPixmapItem(pic)) 
+        view = self.graphicsView 
+        view.setScene(scene) 
+        view.setRenderHint(QtGui.QPainter.Antialiasing) 
+        view.show() 
 
 
     def setupUi(self, MainWindow):
