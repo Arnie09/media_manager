@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import sys
 
 cwd = os.getcwd()
 con = sqlite3.connect(os.path.join(cwd,'movies_.db'))
@@ -19,6 +20,6 @@ count1 = 0
 for result in c.fetchall():
     print(result[0])
     count1+=1
-
+print(sys.path[0])
 print(count1)
 con.close()

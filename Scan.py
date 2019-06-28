@@ -1,43 +1,36 @@
-# -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Scan.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.2
-#
-# WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Scan_Dialog(object):
-    def setupUi(self, Scan_Dialog):
-        Scan_Dialog.setObjectName("Scan_Dialog")
-        Scan_Dialog.resize(515, 142)
-        self.verticalLayout = QtWidgets.QVBoxLayout(Scan_Dialog)
+class Ui_Dialog_(object):
+
+    def close(self):
+        self.Dialog.close()
+
+    def setupUi_(self, Dialog):
+        self.Dialog = Dialog
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(592, 373)
+        Dialog.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.532, y1:0, x2:0.538, y2:1, stop:0 rgba(253, 249, 206, 255), stop:1 rgba(255, 255, 255, 255))")
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.label = QtWidgets.QLabel(Scan_Dialog)
+        self.label = QtWidgets.QLabel(Dialog)
         self.label.setObjectName("label")
         self.verticalLayout.addWidget(self.label)
-        self.progressBar = QtWidgets.QProgressBar(Scan_Dialog)
-        self.progressBar.setMaximum(100)
-        self.progressBar.setProperty("value", 0)
-        self.progressBar.setObjectName("progressBar")
-        self.verticalLayout.addWidget(self.progressBar)
+        self.ok_button = QtWidgets.QPushButton(Dialog)
+        self.ok_button.setObjectName("ok_button")
+        self.ok_button.clicked.connect(self.close)
 
-        self.retranslateUi(Scan_Dialog)
-        QtCore.QMetaObject.connectSlotsByName(Scan_Dialog)
+        self.verticalLayout.addWidget(self.ok_button)
 
-    def retranslateUi(self, Scan_Dialog):
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Scan_Dialog.setWindowTitle(_translate("Scan_Dialog", "Scanning"))
-        self.label.setText(_translate("Scan_Dialog", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt; font-weight:600; color:#ff0000;\">Please wait</span><span style=\" font-size:10pt; font-weight:600;\"> while we scan your system for media files.</span></p></body></html>"))
+        Dialog.setWindowTitle(_translate("Dialog", "Scan Complete!"))
+        self.label.setText(_translate("Dialog", "<html><head/><body><p align=\"center\"><span style=\" font-size:10pt;\">Scan Complete! </span></p><p align=\"center\"><br/></p><p align=\"center\">We will down download the information on the movies 50 at a time one by one in background. </p><p align=\"center\">DONOT TRY TO DOWNLOAD ALL THE INFORMATION AT ONCE. <br/></p><p align=\"center\">You can close this window and keep using the application.</p></body></html>"))
+        self.ok_button.setText(_translate("Dialog", "Ok"))
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Scan_Dialog = QtWidgets.QDialog()
-    ui = Ui_Scan_Dialog()
-    ui.setupUi(Scan_Dialog)
-    Scan_Dialog.show()
-    sys.exit(app.exec_())
 

@@ -1,6 +1,7 @@
 import win32api
 import sqlite3
 import os
+import sys
 import json
 from ScrappingAPI import WebScrapper
 import time
@@ -8,12 +9,12 @@ import threading
 
 class DatabaseHandler:
 
-    def __init__(self):
+    def __init__(self,cwd_):
         self.data = {}
         self.currentStatus_db = []
         self.rejected = {}
         self.films_not_in_database = []
-        self.cwd = os.getcwd()
+        self.cwd = cwd_
         self.no_more_items = False
         self.scan_progress = False
         self.scan_memory()
@@ -27,13 +28,13 @@ class DatabaseHandler:
             return
 
         count = 0
-        conn_ = sqlite3.connect(os.path.join(self.cwd,'movies_.db'))
+        conn_ = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
         c_obj = conn_.cursor()
 
         '''loop through the movies for which we need info'''
         for films in self.films_not_in_database:
 
-            if(count >5):
+            if(count >1):
                 break
             
             print("working with the file : ",films)
@@ -76,6 +77,7 @@ class DatabaseHandler:
             del WebScrapper_instance
 
         print("Files Entered!")
+        print("Scraping function : ", self.cwd)
         with open(os.path.join(self.cwd,'temp_data.json'),'r+') as json_file:            
             json.dump(self.data,json_file)
 
@@ -91,12 +93,14 @@ class DatabaseHandler:
 
     def scan_memory(self):
 
+        a = self.cwd
+        print(a)
         '''connecting to database and creating object'''
-        conn = sqlite3.connect(os.path.join(self.cwd,'movies_.db'))
+        conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
         c = conn.cursor()
 
         '''The main function of temp_data is to serve as a temporary storage to keep track of the files that are in the database'''
-        with open(os.path.join(self.cwd,'temp_data.json'),'r+') as fp:
+        with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as fp:
             try:
                 self.data = json.load(fp)
             except:
@@ -118,7 +122,8 @@ class DatabaseHandler:
                 except:
                     print()
 
-        with open(os.path.join(self.cwd,'rejectedFiles.json'),'r+') as rejected:
+        print(sys.path[0])
+        with open(os.path.join(sys.path[0],'rejectedFiles.json'),'r+') as rejected:
             try:
                 self.rejected = json.load(rejected)
             except:
@@ -150,7 +155,7 @@ class DatabaseHandler:
                         continue
 
         '''creating the json to store paths'''
-        with open(os.path.join(self.cwd,'path.json'),'r+') as pathfile:
+        with open(os.path.join(sys.path[0],'path.json'),'r+') as pathfile:
             json.dump(paths,pathfile)
 
         '''TO FIND OUT WHICH MOVIES HAVE A RECORD IN DATABASE ANND WHICH MOVIES ARE STILL NOT THERE IN DATABASE'''

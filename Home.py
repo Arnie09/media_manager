@@ -5,6 +5,7 @@ import sqlite3
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QBrush, QColor
 from About import Ui_Dialog
+from Scan import Ui_Dialog_
 
 class Ui_MainWindow(object):
 
@@ -15,13 +16,19 @@ class Ui_MainWindow(object):
         dialog.show()
         dialog.exec_()
         
-
-    def function_to_scan(self):
-        self.DatabaseHandler_instance = DatabaseHandler()
+    # def function_to_scan(self):
+    #     self.DatabaseHandler_instance = DatabaseHandler()
+            
 
     def scanSystem(self):
-        scan_thread = threading.Thread(target = self.function_to_scan)
-        scan_thread.start()
+        # scan_thread = threading.Thread(target = self.function_to_scan)
+        # scan_thread.start()
+        self.DatabaseHandler_instance = DatabaseHandler(os.getcwd())
+        scanDialog = QtWidgets.QDialog()
+        scanDialogui = Ui_Dialog_()
+        scanDialogui.setupUi_(scanDialog)
+        scanDialog.show()
+        scanDialog.exec_()
 
     def refresh_function(self):
 
