@@ -10,6 +10,7 @@ import threading
 class DatabaseHandler:
 
     def __init__(self,cwd_):
+        self.current_instance_of_db = []
         self.data = {}
         self.currentStatus_db = []
         self.rejected = {}
@@ -34,7 +35,7 @@ class DatabaseHandler:
         '''loop through the movies for which we need info'''
         for films in self.films_not_in_database:
 
-            if(count >9):
+            if(count >0):
                 break
             
             print("working with the file : ",films)
@@ -65,6 +66,13 @@ class DatabaseHandler:
                         self.currentStatus_db.append(results)
                 else:
                     self.currentStatus_db.append((b,))
+
+                if(len(self.current_instance_of_db) == 0):
+                    c_obj.execute("SELECT * FROM local_movies")
+                    for results in c_obj.fetchall():
+                        self.current_instance_of_db.append(results)
+                else:
+                    self.current_instance_of_db.append((a,b,c,d,e,f,g,h,i))
                 
             else:
                 if(len(self.rejected) == 0):

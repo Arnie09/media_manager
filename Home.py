@@ -19,7 +19,6 @@ class Ui_MainWindow(object):
             with open(os.path.join(sys.path[0],'path.json'),'r') as paths:
                 all_paths = json.load(paths)
                 path_of_the_file_selected = all_paths[self.selected_movie]
-                print(path_of_the_file_selected)
                 with open(os.path.join(sys.path[0],'path_vlc.json'),'r+')as path_vlc:
                     path_dict = json.load(path_vlc)
                     p = subprocess.Popen([path_dict['vlc'],path_of_the_file_selected])
@@ -56,6 +55,7 @@ class Ui_MainWindow(object):
             c.execute("SELECT file_name FROM local_movies")
             for results in c.fetchall():
                 movies_in_db.append(results)
+            conn.close()
         else:
             movies_in_db = self.DatabaseHandler_instance.currentStatus_db
 
@@ -67,6 +67,7 @@ class Ui_MainWindow(object):
 
 
     def on_clicked(self, index):
+        self.Synopsis_.clear()
         self.item = self.entry.itemFromIndex(index)
         self.selected_movie = self.item.text()
         print(self.selected_movie)
@@ -74,6 +75,43 @@ class Ui_MainWindow(object):
         self.itemOld.setForeground(QBrush(QColor(0, 0, 0))) 
         self.itemOld = self.item
         '''Do the updation of the right pane here'''
+        movie = None
+        name = ""
+        rating = ""
+        year = ""
+        poster = ""
+        directors = ""
+        summary = ""
+        genre = ""
+        if(self.DatabaseHandler_instance is None):
+            conn = sqlite3.connect(os.path.join(os.getcwd(),'movies_.db'))
+            c = conn.cursor()
+            c.execute("SELECT * FROM local_movies")
+            for results in c.fetchall():
+                if(self.selected_movie == results[0]):
+                    movie = results
+            conn.close()
+        else:
+            for movies in self.DatabaseHandler_instance.current_instance_of_db:
+                if(self.selected_movie == movies[0]):
+                    movie = movies
+        name = movie[1]
+        rating = movie[2]
+        year = movie[3]
+        poster = movie[7]
+        directors = movie[4][1:-1].replace("'","")
+        genre = movie[5][1:-1].replace("'","")
+        summary = movie[6]
+
+        print(directors)
+
+        self.name_.setText(str(name))
+        self.Director_.setText(str(directors))
+        self.Rating_.setText(str(rating))
+        self.release_date_.setText(str(year))
+        self.Synopsis_.append(str(summary)+'\n')
+        self.genre_.setText(str(genre))
+
 
     def setupUi(self, MainWindow):
 
@@ -179,7 +217,7 @@ class Ui_MainWindow(object):
         self.Rating_.setText("")
         self.Rating_.setObjectName("Rating_")
 
-        self.Synopsis_ = QtWidgets.QLabel(self.centralwidget)
+        self.Synopsis_ = QtWidgets.QTextBrowser(self.centralwidget)
         self.Synopsis_.setGeometry(QtCore.QRect(490, 410, 371, 171))
         self.Synopsis_.setText("")
         self.Synopsis_.setObjectName("Synopsis_")
