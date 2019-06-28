@@ -16,9 +16,10 @@ from databasehandler import DatabaseHandler
 
 class Ui_MainWindow(object):
 
-    path_of_the_file_selected = ""
-
+    '''to play the selected file'''
     def play_file(self):
+
+        path_of_the_file_selected = ""
         if self.selected_movie is not None:
             with open(os.path.join(sys.path[0],'path.json'),'r') as paths:
                 all_paths = json.load(paths)
@@ -27,20 +28,18 @@ class Ui_MainWindow(object):
                     path_dict = json.load(path_vlc)
                     p = subprocess.Popen([path_dict['vlc'],path_of_the_file_selected])
 
+    '''to display dialog while clicking about'''
     def aboutSoftware(self):
+
         dialog = QtWidgets.QDialog()
         dialogui = Ui_Dialog()
         dialogui.setupUi(dialog)
         dialog.show()
         dialog.exec_()
         
-    # def function_to_scan(self):
-    #     self.DatabaseHandler_instance = DatabaseHandler()
-            
-
+    '''action which takes place when the user scans'''
     def scanSystem(self):
-        # scan_thread = threading.Thread(target = self.function_to_scan)
-        # scan_thread.start()
+
         self.DatabaseHandler_instance = DatabaseHandler(os.getcwd())
         scanDialog = QtWidgets.QDialog()
         scanDialogui = Ui_Dialog_()
@@ -48,6 +47,7 @@ class Ui_MainWindow(object):
         scanDialog.show()
         scanDialog.exec_()
 
+    '''to refresh the listview'''
     def refresh_function(self):
 
         self.entry = QtGui.QStandardItemModel()
@@ -63,14 +63,15 @@ class Ui_MainWindow(object):
         else:
             movies_in_db = self.DatabaseHandler_instance.currentStatus_db
 
-        #print(movies_in_db)
         for movie in movies_in_db:
             item = QtGui.QStandardItem(movie[0])
             self.entry.appendRow(item)
+
         self.itemOld = QtGui.QStandardItem("text")
 
-
+    '''action which happens when a movie name is clicked in the listview'''
     def on_clicked(self, index):
+
         self.Synopsis_.clear()
         self.item = self.entry.itemFromIndex(index)
         self.selected_movie = self.item.text()
@@ -107,8 +108,7 @@ class Ui_MainWindow(object):
         genre = movie[5][1:-1].replace("'","")
         summary = movie[6]
 
-        print(directors)
-
+        '''updating the labels in the UI'''
         self.name_.setText(str(name))
         self.Director_.setText(str(directors))
         self.Rating_.setText(str(rating))
@@ -116,15 +116,19 @@ class Ui_MainWindow(object):
         self.Synopsis_.append(str(summary)+'\n')
         self.genre_.setText(str(genre))
 
-        urllib.request.urlretrieve(poster, "poster.jpg")
-        
-        scene = QtWidgets.QGraphicsScene() 
-        pic = QtGui.QPixmap("poster.jpg")
-        scene.addItem(QtWidgets.QGraphicsPixmapItem(pic)) 
-        view = self.graphicsView 
-        view.setScene(scene) 
-        view.setRenderHint(QtGui.QPainter.Antialiasing) 
-        view.show() 
+        try:
+            urllib.request.urlretrieve(poster, "poster.jpg")
+            
+            '''way to display an image in the QGraphicsView'''
+            scene = QtWidgets.QGraphicsScene() 
+            pic = QtGui.QPixmap("poster.jpg")
+            scene.addItem(QtWidgets.QGraphicsPixmapItem(pic)) 
+            view = self.graphicsView 
+            view.setScene(scene) 
+            view.setRenderHint(QtGui.QPainter.Antialiasing) 
+            view.show() 
+        except:
+            print("Error in connection")
 
 
     def setupUi(self, MainWindow):
