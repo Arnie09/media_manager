@@ -16,6 +16,48 @@ from databasehandler import DatabaseHandler
 
 class Ui_MainWindow(object):
 
+    '''to perform search'''
+
+    def search(self):
+        
+        text_to_search = self.search_input.text()
+        if(len(text_to_search) != 0):
+            attribute = self.comboBox.currentText()
+            index = None
+            if attribute == "Name":
+                index = 1
+            elif attribute == "Rating":
+                index = 2
+            elif attribute == "Year":
+                index = 3
+            elif attribute == "Director":
+                index = 4
+            elif attribute == "Genre":
+                index = 5
+
+            self.entry = QtGui.QStandardItemModel()
+            self.movie_list_view.setModel(self.entry)
+            search_results = []
+            if(self.DatabaseHandler_instance is None):
+                conn = sqlite3.connect(os.path.join(os.getcwd(),'movies_.db'))
+                c = conn.cursor()
+                c.execute("SELECT * FROM local_movies")
+                for results in c.fetchall():
+                    if(text_to_search in results[index]):
+                        search_results.append((results[0]))
+                conn.close()
+            else:
+                for results in self.DatabaseHandler_instance.current_instance_of_db:
+                    if(text_to_search in results[index]):
+                        search_results.append((results[0]))
+
+            for movie in search_results:
+                item = QtGui.QStandardItem(movie)
+                self.entry.appendRow(item)
+
+            self.itemOld = QtGui.QStandardItem("text")
+        
+
     '''to play the selected file'''
     def play_file(self):
 
@@ -165,6 +207,8 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(10, 10, 55, 16))
         self.label_2.setObjectName("label_2")
+
+        '''LineEdit to take the input to search'''
         self.search_input = QtWidgets.QLineEdit(self.centralwidget)
         self.search_input.setGeometry(QtCore.QRect(10, 30, 371, 22))
         self.search_input.setObjectName("search_input")
@@ -173,11 +217,14 @@ class Ui_MainWindow(object):
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox.setGeometry(QtCore.QRect(10, 60, 221, 22))
         self.comboBox.setObjectName("comboBox")
+        combinations = ["Name","Rating","Genre","Director","Year"]
+        self.comboBox.addItems(combinations)
 
         '''search button to search things'''
         self.search_button = QtWidgets.QPushButton(self.centralwidget)
         self.search_button.setGeometry(QtCore.QRect(240, 60, 141, 28))
         self.search_button.setObjectName("search_button")
+        self.search_button.clicked.connect(self.search)
 
         '''refresh button to refresh looking for changes in files'''
         self.refresh_button = QtWidgets.QPushButton(self.centralwidget)
