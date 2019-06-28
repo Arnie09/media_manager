@@ -1,13 +1,28 @@
 from databasehandler import DatabaseHandler
 import threading
 import os
+import sys
+import json
 import sqlite3
+import subprocess
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QBrush, QColor
 from About import Ui_Dialog
 from Scan import Ui_Dialog_
 
 class Ui_MainWindow(object):
+
+    path_of_the_file_selected = ""
+
+    def play_file(self):
+        if self.selected_movie is not None:
+            with open(os.path.join(sys.path[0],'path.json'),'r') as paths:
+                all_paths = json.load(paths)
+                path_of_the_file_selected = all_paths[self.selected_movie]
+                print(path_of_the_file_selected)
+                with open(os.path.join(sys.path[0],'path_vlc.json'),'r+')as path_vlc:
+                    path_dict = json.load(path_vlc)
+                    p = subprocess.Popen([path_dict['vlc'],path_of_the_file_selected])
 
     def aboutSoftware(self):
         dialog = QtWidgets.QDialog()
@@ -38,7 +53,7 @@ class Ui_MainWindow(object):
         if(self.DatabaseHandler_instance is None):
             conn = sqlite3.connect(os.path.join(os.getcwd(),'movies_.db'))
             c = conn.cursor()
-            c.execute("SELECT name FROM local_movies")
+            c.execute("SELECT file_name FROM local_movies")
             for results in c.fetchall():
                 movies_in_db.append(results)
         else:
@@ -52,15 +67,28 @@ class Ui_MainWindow(object):
 
 
     def on_clicked(self, index):
-        item = self.entry.itemFromIndex(index)
-        print(item)
-        item.setForeground(QBrush(QColor(255, 0, 0))) 
+        self.item = self.entry.itemFromIndex(index)
+        self.selected_movie = self.item.text()
+        print(self.selected_movie)
+        self.item.setForeground(QBrush(QColor(255, 0, 0))) 
         self.itemOld.setForeground(QBrush(QColor(0, 0, 0))) 
-        self.itemOld = item
+        self.itemOld = self.item
         '''Do the updation of the right pane here'''
 
     def setupUi(self, MainWindow):
+
         self.MainWindow = MainWindow
+        with open(os.path.join(sys.path[0],'path_vlc.json'),'r+')as path_vlc:
+            path_dict = json.load(path_vlc)
+            if(path_dict['vlc'] == ""):
+                name = QtWidgets.QFileDialog.getOpenFileName(self.MainWindow, "Select File", "", "*.exe")
+                path=name[0]
+                new_path = {'vlc':path}
+                path_vlc.seek(0)
+                json.dump(new_path,path_vlc)
+                path_vlc.truncate()
+        self.selected_movie = None
+        
         self.DatabaseHandler_instance = None
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(889, 835)
@@ -159,6 +187,7 @@ class Ui_MainWindow(object):
         self.play_button = QtWidgets.QPushButton(self.centralwidget)
         self.play_button.setGeometry(QtCore.QRect(700, 710, 93, 28))
         self.play_button.setObjectName("play_button")
+        self.play_button.clicked.connect(self.play_file)
 
         self.delete_button = QtWidgets.QPushButton(self.centralwidget)
         self.delete_button.setGeometry(QtCore.QRect(475, 710, 93, 28))

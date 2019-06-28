@@ -60,7 +60,7 @@ class DatabaseHandler:
                 conn_.commit()
 
                 if(len(self.currentStatus_db) == 0):
-                    c_obj.execute("SELECT name FROM local_movies")
+                    c_obj.execute("SELECT file_name FROM local_movies")
                     for results in c_obj.fetchall():
                         self.currentStatus_db.append(results)
                 else:
