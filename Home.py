@@ -14,6 +14,7 @@ class Ui_MainWindow(object):
         dialogui.setupUi(dialog)
         dialog.show()
         dialog.exec_()
+        
 
     def function_to_scan(self):
         self.DatabaseHandler_instance = DatabaseHandler()

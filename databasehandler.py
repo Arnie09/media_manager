@@ -15,13 +15,14 @@ class DatabaseHandler:
         self.films_not_in_database = []
         self.cwd = os.getcwd()
         self.no_more_items = False
+        self.scan_progress = False
         self.scan_memory()
 
     def function_that_scraps(self):
 
         '''extraction of details needs to be done here'''
 
-        if(len(films_not_in_database) == 0):
+        if(len(self.films_not_in_database) == 0):
             self.no_more_items = True
             return
 
@@ -35,6 +36,7 @@ class DatabaseHandler:
             if(count >5):
                 break
             
+            print("working with the file : ",films)
             WebScrapper_instance = WebScrapper(films)
             count+=1
             STATUS = "COMPLETE"
@@ -161,6 +163,8 @@ class DatabaseHandler:
         #     films_not_in_database.append(result[0])
 
         conn.close()
+
+        self.scan_progress = True
 
         '''Calling the threaded function'''
         download_thread = threading.Thread(target=self.function_that_scraps)
