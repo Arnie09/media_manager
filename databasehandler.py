@@ -34,7 +34,7 @@ class DatabaseHandler:
         '''loop through the movies for which we need info'''
         for films in self.films_not_in_database:
 
-            if(count >1):
+            if(count >9):
                 break
             
             print("working with the file : ",films)
@@ -77,11 +77,11 @@ class DatabaseHandler:
             del WebScrapper_instance
 
         print("Files Entered!")
-        print("Scraping function : ", self.cwd)
-        with open(os.path.join(self.cwd,'temp_data.json'),'r+') as json_file:            
+
+        with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as json_file:            
             json.dump(self.data,json_file)
 
-        with open(os.path.join(self.cwd,'rejectedFiles.json'),'r+') as rejected:
+        with open(os.path.join(sys.path[0],'rejectedFiles.json'),'r+') as rejected:
             json.dump(self.rejected,rejected)
 
         '''tO DELETE THE DUPLICATE ENTRIES'''
@@ -94,7 +94,6 @@ class DatabaseHandler:
     def scan_memory(self):
 
         a = self.cwd
-        print(a)
         '''connecting to database and creating object'''
         conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
         c = conn.cursor()
@@ -122,7 +121,6 @@ class DatabaseHandler:
                 except:
                     print()
 
-        print(sys.path[0])
         with open(os.path.join(sys.path[0],'rejectedFiles.json'),'r+') as rejected:
             try:
                 self.rejected = json.load(rejected)
