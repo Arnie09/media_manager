@@ -32,62 +32,67 @@ class DatabaseHandler:
         conn_ = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
         c_obj = conn_.cursor()
 
-        '''loop through the movies for which we need info'''
-        for films in self.films_not_in_database:
+        with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as json_file: 
 
-            if(count >0):
-                break
-            
-            print("working with the file : ",films)
-            WebScrapper_instance = WebScrapper(films)
-            count+=1
-            STATUS = "COMPLETE"
-            if("Null" in list(WebScrapper_instance.information.values())):
-                STATUS = "INCOMPLETE"
-            
-            a = films
-            b = str(WebScrapper_instance.information['Name'])
-            c = str(WebScrapper_instance.information['Rating'])
-            d = str(WebScrapper_instance.information['Year'])
-            e = str(WebScrapper_instance.information['Directors'])
-            f = str(WebScrapper_instance.information['Genre'])
-            g = str(WebScrapper_instance.information['Summary'])
-            h = str(WebScrapper_instance.information['Poster'])
-            i = STATUS
+            '''loop through the movies for which we need info'''
+            for films in self.films_not_in_database:
 
-            if(b != "Null" and c != "Null" and d != "Null"):
-                c_obj.execute("INSERT OR REPLACE INTO local_movies (file_name,name,rating,release_date,director,genre,synopsis,poster,information) VALUES(?,?,?,?,?,?,?,?,?)",(a,b,c,d,e,f,g,h,i))
-                self.data['names'].append(films)
-                conn_.commit()
-
-                if(len(self.currentStatus_db) == 0):
-                    c_obj.execute("SELECT file_name FROM local_movies")
-                    for results in c_obj.fetchall():
-                        self.currentStatus_db.append(results)
-                else:
-                    self.currentStatus_db.append((b,))
-
-                if(len(self.current_instance_of_db) == 0):
-                    c_obj.execute("SELECT * FROM local_movies")
-                    for results in c_obj.fetchall():
-                        self.current_instance_of_db.append(results)
-                else:
-                    self.current_instance_of_db.append((a,b,c,d,e,f,g,h,i))
+                if(count >1):
+                    break
                 
-            else:
-                if(len(self.rejected) == 0):
-                    self.rejected['names'] = films
+                print("working with the file : ",films)
+                WebScrapper_instance = WebScrapper(films)
+                count+=1
+                STATUS = "COMPLETE"
+                if("Null" in list(WebScrapper_instance.information.values())):
+                    STATUS = "INCOMPLETE"
+                
+                a = films
+                b = str(WebScrapper_instance.information['Name'])
+                c = str(WebScrapper_instance.information['Rating'])
+                d = str(WebScrapper_instance.information['Year'])
+                e = str(WebScrapper_instance.information['Directors'])
+                f = str(WebScrapper_instance.information['Genre'])
+                g = str(WebScrapper_instance.information['Summary'])
+                h = str(WebScrapper_instance.information['Poster'])
+                i = STATUS
+
+                if(b != "Null" and c != "Null" and d != "Null"):
+                    c_obj.execute("INSERT OR REPLACE INTO local_movies (file_name,name,rating,release_date,director,genre,synopsis,poster,information) VALUES(?,?,?,?,?,?,?,?,?)",(a,b,c,d,e,f,g,h,i))
+                    self.data['names'].append(films)
+                    conn_.commit()
+
+                    if(len(self.currentStatus_db) == 0):
+                        c_obj.execute("SELECT file_name FROM local_movies")
+                        for results in c_obj.fetchall():
+                            self.currentStatus_db.append(results)
+                    else:
+                        self.currentStatus_db.append((a,))
+
+                    if(len(self.current_instance_of_db) == 0):
+                        c_obj.execute("SELECT * FROM local_movies")
+                        for results in c_obj.fetchall():
+                            self.current_instance_of_db.append(results)
+                    else:
+                        self.current_instance_of_db.append((a,b,c,d,e,f,g,h,i))
+                    
                 else:
-                    self.rejected['names'].append(films)
+                    if(len(self.rejected) == 0):
+                        self.rejected['names'] = films
+                    else:
+                        self.rejected['names'].append(films)
+                
+                json_file.seek(0)
+                json.dump(self.data,json_file)
+                json_file.truncate()
+                
+                time.sleep(8)
+                del WebScrapper_instance
 
+            print("Files Entered!")
+
+                   
             
-            time.sleep(8)
-            del WebScrapper_instance
-
-        print("Files Entered!")
-
-        with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as json_file:            
-            json.dump(self.data,json_file)
 
         with open(os.path.join(sys.path[0],'rejectedFiles.json'),'r+') as rejected:
             json.dump(self.rejected,rejected)
