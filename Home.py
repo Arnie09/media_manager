@@ -100,6 +100,13 @@ class Ui_MainWindow(object):
 
             self.itemOld = QtGui.QStandardItem("text")  
 
+        else:
+            message_dialog = QtWidgets.QDialog()
+            message_dialog_ui = Message_Ui_Dialog()
+            message_dialog_ui.message_setupUi(message_dialog,"Please type any attribute or type file name")
+            message_dialog.show()
+            message_dialog.exec_()
+
     '''to play the selected file'''
     def play_file(self):
 
@@ -111,6 +118,12 @@ class Ui_MainWindow(object):
                 with open(os.path.join(sys.path[0],'path_vlc.json'),'r+')as path_vlc:
                     path_dict = json.load(path_vlc)
                     p = subprocess.Popen([path_dict['vlc'],path_of_the_file_selected])
+        else:
+            message_dialog = QtWidgets.QDialog()
+            message_dialog_ui = Message_Ui_Dialog()
+            message_dialog_ui.message_setupUi(message_dialog,"Please select a file before playing it.")
+            message_dialog.show()
+            message_dialog.exec_()
 
     '''to display dialog while clicking about'''
     def aboutSoftware(self):
