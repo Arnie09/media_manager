@@ -18,6 +18,7 @@ class DatabaseHandler:
         self.cwd = cwd_
         self.no_more_items = False
         self.scan_progress = False
+        self.finished_loading = False
         self.scan_memory()
 
     def function_that_scraps(self):
@@ -66,6 +67,7 @@ class DatabaseHandler:
                         self.data['names'].append(films)
                         file_valid = True
                         conn_.commit()
+                        
 
                         if(len(self.currentStatus_db) == 0):
                             c_obj.execute("SELECT file_name FROM local_movies")
@@ -80,6 +82,8 @@ class DatabaseHandler:
                                 self.current_instance_of_db.append(results)
                         else:
                             self.current_instance_of_db.append((a,b,c,d,e,f,g,h,i))
+
+                        
                         
                     else:
                         file_valid = False
@@ -106,7 +110,9 @@ class DatabaseHandler:
                     del WebScrapper_instance
 
                 print("Files Entered!")
+                self.finished_loading  = True
 
+            
                    
             
 

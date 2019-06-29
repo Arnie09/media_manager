@@ -7,6 +7,7 @@ import subprocess
 import urllib.request
 from Scan import Ui_Dialog_
 from About import Ui_Dialog
+from deleteD import Ui_Delete_Dialog
 from PyQt5.QtGui import QBrush, QColor
 from PyQt5 import QtCore, QtGui, QtWidgets
 from databasehandler import DatabaseHandler
@@ -20,24 +21,41 @@ class Ui_MainWindow(object):
     def delete_record(self):
         
         if self.selected_movie is not None:
-            print(self.selected_movie)
-            if self.DatabaseHandler_instance is None:
-                conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
-                c = conn.cursor()
-                c.execute("SELECT * FROM local_movies WHERE file_name = ? LIMIT 1",(self.selected_movie,))
-                item_to_be_deleted = None
-                for result in c.fetchall():
-                    item_to_be_deleted = result
-                c.execute("DELETE FROM local_movies WHERE file_name = ?",(self.selected_movie,))
-                with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as temp_data:
-                    data = json.load(temp_data)
-                    data['names'].remove(self.selected_movie)
-                    temp_data.seek(0)
-                    json.dump(data,temp_data)
-                    temp_data.truncate()
-                conn.commit()
-                conn.close()
-                self.refresh_function()
+            if self.DatabaseHandler_instance is None or self.DatabaseHandler_instance.finished_loading == True:
+                self.delete_surerity = "NO"
+
+                '''show the dialog'''
+                del_dialog = QtWidgets.QDialog()
+                del_dialogui = Ui_Delete_Dialog()
+                del_dialogui.setupUi(del_dialog,self)
+                del_dialog.show()
+                del_dialog.exec_()
+
+                if self.delete_surerity == "YES":
+
+                    print("Hi")
+
+                    # conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
+                    # c = conn.cursor()
+                    # c.execute("SELECT * FROM local_movies WHERE file_name = ? LIMIT 1",(self.selected_movie,))
+                    # item_to_be_deleted = None
+                    # for result in c.fetchall():
+                    #     item_to_be_deleted = result
+                    # c.execute("DELETE FROM local_movies WHERE file_name = ?",(self.selected_movie,))
+                    # with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as temp_data:
+                    #     data = json.load(temp_data)
+                    #     data['names'].remove(self.selected_movie)
+                    #     temp_data.seek(0)
+                    #     json.dump(data,temp_data)
+                    #     temp_data.truncate()
+                    # conn.commit()
+                    # conn.close()
+                    # self.refresh_function()
+
+            else:
+
+                '''show the data loading dialog'''
+                print("please wait...")
 
     '''to perform search'''
     def search(self):
@@ -110,6 +128,8 @@ class Ui_MainWindow(object):
         scanDialog.show()
         scanDialog.exec_()
 
+        #self.DatabaseHandler_instance = None
+
     '''to refresh the listview'''
     def refresh_function(self):
 
@@ -163,35 +183,38 @@ class Ui_MainWindow(object):
             for movies in self.DatabaseHandler_instance.current_instance_of_db:
                 if(self.selected_movie == movies[0]):
                     movie = movies
-        name = movie[1]
-        rating = movie[2]
-        year = movie[3]
-        poster = movie[7]
-        directors = movie[4][1:-1].replace("'","")
-        genre = movie[5][1:-1].replace("'","")
-        summary = movie[6]
-
-        '''updating the labels in the UI'''
-        self.name_.setText(str(name))
-        self.Director_.setText(str(directors))
-        self.Rating_.setText(str(rating))
-        self.release_date_.setText(str(year))
-        self.Synopsis_.append(str(summary)+'\n')
-        self.genre_.setText(str(genre))
-
-        try:
-            urllib.request.urlretrieve(poster, "poster.jpg")
+        
+        if movie is not None:
             
-            '''way to display an image in the QGraphicsView'''
-            scene = QtWidgets.QGraphicsScene() 
-            pic = QtGui.QPixmap("poster.jpg")
-            scene.addItem(QtWidgets.QGraphicsPixmapItem(pic)) 
-            view = self.graphicsView 
-            view.setScene(scene) 
-            view.setRenderHint(QtGui.QPainter.Antialiasing) 
-            view.show() 
-        except:
-            print("Error in connection")
+            name = movie[1]
+            rating = movie[2]
+            year = movie[3]
+            poster = movie[7]
+            directors = movie[4][1:-1].replace("'","")
+            genre = movie[5][1:-1].replace("'","")
+            summary = movie[6]
+
+            '''updating the labels in the UI'''
+            self.name_.setText(str(name))
+            self.Director_.setText(str(directors))
+            self.Rating_.setText(str(rating))
+            self.release_date_.setText(str(year))
+            self.Synopsis_.append(str(summary)+'\n')
+            self.genre_.setText(str(genre))
+
+            try:
+                urllib.request.urlretrieve(poster, "poster.jpg")
+                
+                '''way to display an image in the QGraphicsView'''
+                scene = QtWidgets.QGraphicsScene() 
+                pic = QtGui.QPixmap("poster.jpg")
+                scene.addItem(QtWidgets.QGraphicsPixmapItem(pic)) 
+                view = self.graphicsView 
+                view.setScene(scene) 
+                view.setRenderHint(QtGui.QPainter.Antialiasing) 
+                view.show() 
+            except:
+                print("Error in connection")
 
 
     def setupUi(self, MainWindow):
