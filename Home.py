@@ -16,8 +16,30 @@ from databasehandler import DatabaseHandler
 
 class Ui_MainWindow(object):
 
-    '''to perform search'''
+    '''to perform delete operation'''
+    def delete_record(self):
+        
+        if self.selected_movie is not None:
+            print(self.selected_movie)
+            if self.DatabaseHandler_instance is None:
+                conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
+                c = conn.cursor()
+                c.execute("SELECT * FROM local_movies WHERE file_name = ? LIMIT 1",(self.selected_movie,))
+                item_to_be_deleted = None
+                for result in c.fetchall():
+                    item_to_be_deleted = result
+                c.execute("DELETE FROM local_movies WHERE file_name = ?",(self.selected_movie,))
+                with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as temp_data:
+                    data = json.load(temp_data)
+                    data['names'].remove(self.selected_movie)
+                    temp_data.seek(0)
+                    json.dump(data,temp_data)
+                    temp_data.truncate()
+                conn.commit()
+                conn.close()
+                self.refresh_function()
 
+    '''to perform search'''
     def search(self):
         
         text_to_search = self.search_input.text()
@@ -39,7 +61,7 @@ class Ui_MainWindow(object):
             self.movie_list_view.setModel(self.entry)
             search_results = []
             if(self.DatabaseHandler_instance is None):
-                conn = sqlite3.connect(os.path.join(os.getcwd(),'movies_.db'))
+                conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
                 c = conn.cursor()
                 c.execute("SELECT * FROM local_movies")
                 for results in c.fetchall():
@@ -55,8 +77,7 @@ class Ui_MainWindow(object):
                 item = QtGui.QStandardItem(movie)
                 self.entry.appendRow(item)
 
-            self.itemOld = QtGui.QStandardItem("text")
-        
+            self.itemOld = QtGui.QStandardItem("text")  
 
     '''to play the selected file'''
     def play_file(self):
@@ -295,6 +316,7 @@ class Ui_MainWindow(object):
         self.delete_button = QtWidgets.QPushButton(self.centralwidget)
         self.delete_button.setGeometry(QtCore.QRect(475, 710, 93, 28))
         self.delete_button.setObjectName("delete_button")
+        self.delete_button.clicked.connect(self.delete_record)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
