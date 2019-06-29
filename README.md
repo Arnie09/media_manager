@@ -21,10 +21,16 @@ The information loading procedure occurs as a multithreaded process in the backg
 searching based on movie attributes like name, rating, directors, year and so on. A play button has also been included that enables the direct 
 playing of the selected movie file. 
 
-### Dependancies :
+### Dependancies:
 
 * Vlc media player
 * PyQT5 (pip install pyqt5)
+
+### How to run:
+
+* After opening this application you will be frst promted to choose the location of the vlc.exe on your system. This step is one time only!
+* The next step is to scan the system. So proceed to File -> Scan and wait for the dialog box to appear. On clicking Ok, you're good to go.
+* After clicking Ok click the refresh button and movies will start coming up as they get loaded into the database. During the initial loading its expected to take some time. Will improve this speed in furthur updates. 
 
 ### Lets see some screenshots?
 
