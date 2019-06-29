@@ -42,7 +42,7 @@ class DatabaseHandler:
                 '''loop through the movies for which we need info'''
                 for films in self.films_not_in_database:
 
-                    if(count >1):
+                    if(count >15):
                         break
                     
                     print("working with the file : ",films)
@@ -111,13 +111,6 @@ class DatabaseHandler:
 
                 print("Files Entered!")
                 self.finished_loading  = True
-
-            
-                   
-            
-
-        
-            
 
         '''tO DELETE THE DUPLICATE ENTRIES'''
         c_obj.execute("DELETE FROM local_movies WHERE name == 'Null'")

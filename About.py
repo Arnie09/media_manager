@@ -9,6 +9,7 @@ class Ui_Dialog(object):
         self.Dialog = Dialog
         Dialog.setObjectName("Dialog")
         Dialog.resize(432, 344)
+        Dialog.setStyleSheet("background-color:qlineargradient(spread:pad, x1:0.532, y1:0, x2:0.538, y2:1, stop:0 rgba(253, 249, 206, 255), stop:1 rgba(255, 255, 255, 255))")
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.label = QtWidgets.QLabel(Dialog)
