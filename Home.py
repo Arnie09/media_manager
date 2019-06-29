@@ -9,6 +9,7 @@ from Scan import Ui_Dialog_
 from About import Ui_Dialog
 from deleteD import Ui_Delete_Dialog
 from PyQt5.QtGui import QBrush, QColor
+from messageD import Message_Ui_Dialog
 from PyQt5 import QtCore, QtGui, QtWidgets
 from databasehandler import DatabaseHandler
 
@@ -33,29 +34,31 @@ class Ui_MainWindow(object):
 
                 if self.delete_surerity == "YES":
 
-                    print("Hi")
-
-                    # conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
-                    # c = conn.cursor()
-                    # c.execute("SELECT * FROM local_movies WHERE file_name = ? LIMIT 1",(self.selected_movie,))
-                    # item_to_be_deleted = None
-                    # for result in c.fetchall():
-                    #     item_to_be_deleted = result
-                    # c.execute("DELETE FROM local_movies WHERE file_name = ?",(self.selected_movie,))
-                    # with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as temp_data:
-                    #     data = json.load(temp_data)
-                    #     data['names'].remove(self.selected_movie)
-                    #     temp_data.seek(0)
-                    #     json.dump(data,temp_data)
-                    #     temp_data.truncate()
-                    # conn.commit()
-                    # conn.close()
-                    # self.refresh_function()
+                    conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
+                    c = conn.cursor()
+                    c.execute("SELECT * FROM local_movies WHERE file_name = ? LIMIT 1",(self.selected_movie,))
+                    item_to_be_deleted = None
+                    for result in c.fetchall():
+                        item_to_be_deleted = result
+                    c.execute("DELETE FROM local_movies WHERE file_name = ?",(self.selected_movie,))
+                    with open(os.path.join(sys.path[0],'temp_data.json'),'r+') as temp_data:
+                        data = json.load(temp_data)
+                        data['names'].remove(self.selected_movie)
+                        temp_data.seek(0)
+                        json.dump(data,temp_data)
+                        temp_data.truncate()
+                    conn.commit()
+                    conn.close()
+                    self.refresh_function()
 
             else:
 
                 '''show the data loading dialog'''
-                print("please wait...")
+                message_dialog = QtWidgets.QDialog()
+                message_dialog_ui = Message_Ui_Dialog()
+                message_dialog_ui.message_setupUi(message_dialog,"Please wait while the data is being loaded.\n Try after sometime!")
+                message_dialog.show()
+                message_dialog.exec_()
 
     '''to perform search'''
     def search(self):
@@ -185,7 +188,7 @@ class Ui_MainWindow(object):
                     movie = movies
         
         if movie is not None:
-            
+
             name = movie[1]
             rating = movie[2]
             year = movie[3]
