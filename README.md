@@ -48,6 +48,9 @@ Coming up is the delete feature
 ![deleting](https://github.com/Arnie09/media_manager/blob/master/screenshots/delete.PNG "Delete")
 
 
+
+### Note: Movies once deleted from inside the application will not be scanned furthur so keep that in mind before deleting movies.
+
 ### Queries:
 
 In case of any query feel free to contact me on any of my social media or raise an issue in case of a bug. This project is still under development so its likely
