@@ -161,7 +161,7 @@ class Ui_MainWindow(object):
         self.movie_list_view.setModel(self.entry)
         movies_in_db = []
         if(self.DatabaseHandler_instance is None):
-            conn = sqlite3.connect(os.path.join(os.getcwd(),'movies_.db'))
+            conn = sqlite3.connect(os.path.join(sys.path[0],'movies_.db'))
             c = conn.cursor()
             c.execute("SELECT file_name FROM local_movies")
             for results in c.fetchall():
