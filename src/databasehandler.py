@@ -1,4 +1,4 @@
-import win32api
+import psutil
 import sqlite3
 import os
 import sys
@@ -157,15 +157,15 @@ class DatabaseHandler:
 
         '''to get a list of scannable drives except the system drive'''
         drives = []
-        for drive in win32api.GetLogicalDriveStrings().split('\000')[:-1]:
-            drives.append(drive)
-        systemdrive = os.environ['SYSTEMDRIVE']
+        for drive in psutil.disk_partitions():
+            drives.append(drive[1])
+        systemdrive = '/'
         filenames = []
         paths = {}
 
         '''scanning all media files in the system and storing their names and paths'''
         for drive in drives:
-            if(systemdrive not in drive):
+            if(systemdrive != drive):
                 top = drive
                 for dirName, subdirList, fileList in os.walk(drive):
                     try:
@@ -175,7 +175,7 @@ class DatabaseHandler:
                                 if(filename not in filenames):
                                     filenames.append(filename)
                                     paths[filename] = os.path.join(dirName,filename)
-                                    #print(filename)
+                                    print(filename)
                                     os.chdir(top)
                     except(FileNotFoundError):
                         continue
