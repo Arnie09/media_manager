@@ -116,16 +116,12 @@ class Ui_MainWindow(object):
             with open(os.path.join(sys.path[0],'path.json'),'r') as paths:
                 all_paths = json.load(paths)
                 path_of_the_file_selected = all_paths[self.selected_movie]
-                with open(os.path.join(sys.path[0],'path_vlc.json'),'r+')as path_vlc:
-                    path_dict = json.load(path_vlc)
-                    print(path_of_the_file_selected,"    ",path_dict['vlc'])
-                    Instance = vlc.Instance('--fullscreen')
-                    player = Instance.media_player_new()
-                    Media = Instance.media_new(path_of_the_file_selected)
-                    Media.get_mrl()
-                    player.set_media(Media)
-                    player.play()
-                    # p = subprocess.Popen('vlc',path_of_the_file_selected,buffsize = 0)
+                Instance = vlc.Instance('--fullscreen')
+                player = Instance.media_player_new()
+                Media = Instance.media_new(path_of_the_file_selected)
+                Media.get_mrl()
+                player.set_media(Media)
+                player.play()
         else:
             message_dialog = QtWidgets.QDialog()
             message_dialog_ui = Message_Ui_Dialog()
