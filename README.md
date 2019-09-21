@@ -1,17 +1,17 @@
 # Media Manager
 
-Greetings everyone! Welcome to my sad life where I go on ranting about one more of a thing i made because
-I wanted to. Behold Media Manager(Yeah name sucks)
+Greetings Everyone! Welcome to my sad life where I go on ranting about one more of a thing i made because
+I wanted to. Behold Media Manager (Yeah name sucks)
 
 Anyways as an avid movie watcher and broke students, I cant afford streaming services as of now and hence I have 
 a huge collection of movies that are present in my hard drive. I intend to keep those files and very often I find myself  going 
 back to watching old movies. However there's a problem with havig multiple movies. It becomes hard to track everything. Lots and lots of folders. 
 Pretty sure even Monica Bing would find it hard to organise the movie files properly was she given a chance to do so. 
 
-That is where our beloved Media Manager comes in. This PyQT desktop application is aimed to manage your movie files and 
+That is where our beloved Media Manager comes in. This `PyQT Desktop Application` is aimed to manage your movie files and 
 keep information on them for offline use. Of course you've seen lots of projects which do this but let me tell you about a problem. 
 
-Usually most softwares use omdb API that fetches you the information when you pass in the name of the movie - THE EXACT NAME OF THE MOVIE.
+Usually most softwares use omdb API that fetches you the information when you pass in the name of the movie - *THE EXACT NAME OF THE MOVIE*.
 But the name of the movie is not present in the file name in proper form and thus it becomes a tedious task to manually get the information and create the
 database. Here our Media Manager automatically scans your memory and reads the names of the movie files and extracts information on them without
 your intervention! (Thanks to Google) However as spamming too many requests would temporarily ban the ip, hence our friend only fetches information of 50
@@ -21,18 +21,18 @@ The information loading procedure occurs as a multithreaded process in the backg
 searching based on movie attributes like name, rating, directors, year and so on. A play button has also been included that enables the direct 
 playing of the selected movie file. 
 
-### Dependancies:
+> ### Dependancies:
 
 * Vlc media player
 * PyQT5 (pip install pyqt5)
 
-### How to run:
+> ### How to run:
 
 * After opening this application you will be frst promted to choose the location of the vlc.exe on your system. This step is one time only!
 * The next step is to scan the system. So proceed to File -> Scan and wait for the dialog box to appear. On clicking Ok, you're good to go.
 * After clicking Ok click the refresh button and movies will start coming up as they get loaded into the database. During the initial loading its expected to take some time. Will improve this speed in furthur updates. 
 
-### Lets see some screenshots?
+> ### Lets see some screenshots?
 
 Here is the main screen of the application. The left pane lists all the movies while the 
 right pane lists information on the selected movie.
@@ -49,9 +49,9 @@ Coming up is the delete feature
 
 
 
-### Note: Movies once deleted from inside the application will not be scanned furthur so keep that in mind before deleting movies.
+> ### Note: Movies once deleted from inside the application will not be scanned furthur so keep that in mind before deleting movies.
 
-### Queries:
+> ### Queries:
 
 In case of any query feel free to contact me on any of my social media or raise an issue in case of a bug. This project is still under development so its likely
 to get better. 
